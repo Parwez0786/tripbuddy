@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TripBuddy</title>
+</head>
+
+<body style="background-color: grey;">
+  <div class="Body" style="display: flex; align-items: center; justify-self: center; flex-direction: column;background-color: grey;">
+
+    <div class="c1">
+      <h1>TripBuddy</h1>
+      <form id="tripForm">
+        <label for="source">Source City:</label>
+        <input type="text" id="source" name="source" required><br><br>
+        <label for="destination">Destination City:</label>
+        <input type="text" id="destination" name="destination" required><br><br>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+    <div id="weatherInfo" style="display: flex;align-items: center;justify-content: center;flex-direction: column; font-weight: 500; font-size: large;">
+      <h2>Weather and Timezone Information</h2>
+
+      <div style="color: rgb(0, 0, 0);" id="sourceWeather"></div>
+      <div style="color: rgb(0, 0, 0);" id="destinationWeather"></div>
+      <div style="color: rgb(0, 0, 0);" id="timezoneDifference"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('tripForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const source = document.getElementById('source').value;
+      const destination = document.getElementById('destination').value;
+      const response = await fetch(`/trip-info?source=${source}&destination=${destination}`);
+      const tripInfo = await response.json();
+
+      const sourceId = document.getElementById("sourceWeather");
+      const destId = document.getElementById("destinationWeather");
+      const timeZoneId = document.getElementById("timezoneDifference");
+      timeZoneId.innerHTML = "Time Zone Difference" + "  ->" + tripInfo.timeZoneDiff + " hours";
+      sourceId.innerHTML = tripInfo.weatherSource.name + " Weather" + "    ->" + (tripInfo.weatherSource.main
+        .temp - 273).toFixed(2) + "Celsius";
+      //console.log(tripInfo);
+      destId.innerHTML = tripInfo.weatherDestination.name + " Weather " + " ->" + (tripInfo.weatherDestination
+        .main.temp - 273).toFixed(2) + "Celsius";
+
+    });
+  </script>
+</body>
+
+</html>
